@@ -12,6 +12,7 @@ import Menu from "./pages/Menu";
 import Cart from "./pages/Cart";
 import Orders from "./pages/Orders";
 import Admin from "./pages/Admin";
+import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
                 <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
                 <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
                 <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
+                <Route path="/admin-panel" element={<AdminPanel />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
