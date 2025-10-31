@@ -3,11 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BottomNavigation } from '@/components/ui/bottom-navigation';
 import { useCart } from '@/context/CartContext';
+import { useOrders } from '@/context/OrderContext';
+import { useAuth } from '@/context/AuthContext';
 import { Plus, Minus, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Cart: React.FC = () => {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal, clearCart } = useCart();
+  const { addOrder } = useOrders();
+  const { student } = useAuth();
   const { toast } = useToast();
 
   const handleCheckout = () => {
@@ -19,6 +23,21 @@ const Cart: React.FC = () => {
       });
       return;
     }
+
+    // Create order from cart items
+    addOrder({
+      customerId: student?.rollNumber || 'guest',
+      customerName: student?.name || 'Guest User',
+      items: cartItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        isVeg: item.isVeg
+      })),
+      totalPrice: getCartTotal(),
+      status: 'Pending'
+    });
 
     toast({
       title: "Order placed!",

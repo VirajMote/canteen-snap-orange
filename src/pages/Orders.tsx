@@ -3,43 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BottomNavigation } from '@/components/ui/bottom-navigation';
 import { Clock, CheckCircle, Truck } from 'lucide-react';
+import { useOrders } from '@/context/OrderContext';
+import { format } from 'date-fns';
 
 const Orders: React.FC = () => {
-  // Mock order data
-  const orders = [
-    {
-      id: 'ORD001',
-      items: ['Masala Tea', 'Vada Pav'],
-      total: 27,
-      status: 'preparing',
-      timestamp: '10:30 AM',
-      estimatedTime: '5 mins'
-    },
-    {
-      id: 'ORD002', 
-      items: ['Idli', 'Coffee'],
-      total: 40,
-      status: 'ready',
-      timestamp: '9:45 AM',
-      estimatedTime: 'Ready'
-    },
-    {
-      id: 'ORD003',
-      items: ['Cheese Sandwich', 'Mango Juice'],
-      total: 75,
-      status: 'completed',
-      timestamp: 'Yesterday',
-      estimatedTime: 'Completed'
-    }
-  ];
+  const { orders } = useOrders();
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'preparing':
+      case 'Pending':
         return <Clock className="h-4 w-4" />;
-      case 'ready':
+      case 'In Progress':
         return <Truck className="h-4 w-4" />;
-      case 'completed':
+      case 'Completed':
         return <CheckCircle className="h-4 w-4" />;
       default:
         return <Clock className="h-4 w-4" />;
@@ -48,27 +24,14 @@ const Orders: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'preparing':
+      case 'Pending':
         return 'bg-yellow-500';
-      case 'ready':
+      case 'In Progress':
+        return 'bg-blue-500';
+      case 'Completed':
         return 'bg-green-500';
-      case 'completed':
-        return 'bg-gray-500';
       default:
         return 'bg-gray-500';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'preparing':
-        return 'Preparing';
-      case 'ready':
-        return 'Ready for Pickup';
-      case 'completed':
-        return 'Completed';
-      default:
-        return 'Unknown';
     }
   };
 
@@ -98,7 +61,7 @@ const Orders: React.FC = () => {
                     >
                       <div className="flex items-center space-x-1">
                         {getStatusIcon(order.status)}
-                        <span>{getStatusText(order.status)}</span>
+                        <span>{order.status}</span>
                       </div>
                     </Badge>
                   </div>
@@ -107,17 +70,27 @@ const Orders: React.FC = () => {
                 <CardContent className="space-y-3">
                   <div>
                     <h4 className="font-medium mb-1">Items:</h4>
-                    <p className="text-muted-foreground">{order.items.join(', ')}</p>
+                    <div className="space-y-1">
+                      {order.items.map((item) => (
+                        <p key={item.id} className="text-muted-foreground">
+                          {item.name} x {item.quantity} - ₹{item.price * item.quantity}
+                        </p>
+                      ))}
+                    </div>
                   </div>
                   
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center border-t pt-3">
                     <div>
                       <span className="text-sm text-muted-foreground">Total: </span>
-                      <span className="font-semibold text-primary">₹{order.total}</span>
+                      <span className="font-semibold text-primary">₹{order.totalPrice}</span>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm text-muted-foreground">{order.timestamp}</div>
-                      <div className="text-sm font-medium">{order.estimatedTime}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {format(order.orderTime, 'MMM dd, yyyy')}
+                      </div>
+                      <div className="text-sm font-medium">
+                        {format(order.orderTime, 'hh:mm a')}
+                      </div>
                     </div>
                   </div>
                 </CardContent>
