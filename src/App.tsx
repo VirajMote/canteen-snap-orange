@@ -11,7 +11,6 @@ import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Cart from "./pages/Cart";
 import Orders from "./pages/Orders";
-import Admin from "./pages/Admin";
 import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 
@@ -23,16 +22,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AuthRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated } = useAuth();
   if (isAuthenticated) {
-    return <Navigate to={isAdmin ? "/admin" : "/home"} replace />;
+    return <Navigate to="/home" replace />;
   }
   return <>{children}</>;
-};
-
-const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isAdmin } = useAuth();
-  return isAuthenticated && isAdmin ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
 const App = () => (
@@ -51,7 +45,6 @@ const App = () => (
                 <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
                 <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
                 <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-                <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

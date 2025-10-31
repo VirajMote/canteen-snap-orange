@@ -1,7 +1,6 @@
 export interface Student {
   rollNumber: string;
   name: string;
-  isAdmin?: boolean;
 }
 
 export interface AuthContextType {
@@ -9,5 +8,4 @@ export interface AuthContextType {
   login: (rollNumber: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
-  isAdmin: boolean;
 }

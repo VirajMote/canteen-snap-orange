@@ -23,18 +23,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (rollNumber: string): Promise<void> => {
-    // Check for admin login
-    if (rollNumber === '6969a') {
-      const adminData: Student = {
-        rollNumber,
-        name: 'Admin',
-        isAdmin: true
-      };
-      setStudent(adminData);
-      localStorage.setItem('student', JSON.stringify(adminData));
-      return;
-    }
-
     const studentName = studentDatabase[rollNumber];
     
     if (!studentName) {
@@ -43,8 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const studentData: Student = {
       rollNumber,
-      name: studentName,
-      isAdmin: false
+      name: studentName
     };
 
     setStudent(studentData);
@@ -60,8 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     student,
     login,
     logout,
-    isAuthenticated: !!student,
-    isAdmin: !!student?.isAdmin
+    isAuthenticated: !!student
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
